@@ -1,3 +1,6 @@
+#ifndef TEST_SHARED_STRUCTS_H_
+#define TEST_SHARED_STRUCTS_H_
+
 typedef struct {
     uid_t ruid;
     uid_t euid;
@@ -11,3 +14,5 @@ typedef struct {
 
     mode_t umask;
 } Config;
+
+#endif
