@@ -1,6 +1,9 @@
 #ifndef TEST_SHARED_STRUCTS_H_
 #define TEST_SHARED_STRUCTS_H_
 
+#include <sys/types.h>
+
+
 typedef struct {
     uid_t ruid;
     uid_t euid;
