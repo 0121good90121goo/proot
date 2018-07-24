@@ -50,6 +50,7 @@
 #include "path/path.h"
 #include "arch.h"
 #include "TEST_handle_functions.h"
+#include "TEST_shared_structs.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000
@@ -57,19 +58,6 @@
 #define GROUP_PERMS     1
 #define OTHER_PERMS     2
 
-typedef struct {
-    uid_t ruid;
-    uid_t euid;
-    uid_t suid;
-    uid_t fsuid;
-
-    gid_t rgid;
-    gid_t egid;
-    gid_t sgid;
-    gid_t fsgid;
-
-    mode_t umask;
-} Config;
 
 typedef struct {
     char *path;
