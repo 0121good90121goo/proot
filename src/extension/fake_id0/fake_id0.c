@@ -498,7 +498,7 @@ static int check_dir_perms(Tracee *tracee, char type, char path[PATH_MAX],
  *  exist given a matching meta file. See open(2) for returned permission
  *  errors.
  */
-static int handle_open(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
+    int handle_open(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
     Reg flags_sysarg, Reg mode_sysarg, Config *config)
 {   
     int status, perms, access_mode;
