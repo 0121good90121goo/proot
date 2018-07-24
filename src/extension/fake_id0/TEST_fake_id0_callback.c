@@ -2,5 +2,5 @@
 
 void test() 
 {
-	fake_id0_callback(0, 0, 0, 0);
+	Sake_id0_callback(0, 0, 0, 0); // intentionally broken
 }
