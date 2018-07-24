@@ -61,7 +61,7 @@ OBJECTS += \
 	extension/fix_symlink_size/fix_symlink_size.o \
 	loader/loader-wrapped.o \
 	loader/loader-info.o \
-	src/fake_id0_callback.c
+	extension/fake_id0/fake_id0_callback.c
 
 define define_from_arch.h
 $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')
