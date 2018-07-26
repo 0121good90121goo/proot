@@ -1,5 +1,5 @@
 #ifndef HANDLE_FUNCTIONS_H_
-#define
+#define HANDLE_FUNCTIONS_H_
 
 #include "shared_structs.h"
 
