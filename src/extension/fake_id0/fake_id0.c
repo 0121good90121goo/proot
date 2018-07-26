@@ -49,8 +49,8 @@
 #include "path/binding.h"
 #include "path/path.h"
 #include "arch.h"
-#include "TEST_handle_functions.h"
-#include "TEST_shared_structs.h"
+#include "handle_functions.h"
+#include "shared_structs.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000

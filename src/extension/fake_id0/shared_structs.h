@@ -1,8 +1,9 @@
-#ifndef TEST_SHARED_STRUCTS_H_
-#define TEST_SHARED_STRUCTS_H_
+#ifndef SHARED_STRUCTS_H_
+#define SHARED_STRUCTS_H_
 
 #include <sys/types.h>
 
+#include "tracee/tracee.h"
 
 typedef struct {
     uid_t ruid;

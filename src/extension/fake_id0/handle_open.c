@@ -3,7 +3,17 @@
  *  exist given a matching meta file. See open(2) for returned permission
  *  errors.
  */
-#include "TEST_shared_structs.h"
+
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/limits.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#include "shared_structs.h"
+#include "tracee/reg.h"
+
+#define IGNORE_SYSARG (Reg)2000
 
 int handle_open(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
     Reg flags_sysarg, Reg mode_sysarg, Config *config)

@@ -61,7 +61,6 @@ OBJECTS += \
 	extension/fix_symlink_size/fix_symlink_size.o \
 	loader/loader-wrapped.o \
 	loader/loader-info.o \
-	extension/fake_id0/TEST_fake_id0_callback.o \
 	extension/fake_id0/TEST_handle_open.o
 
 define define_from_arch.h
