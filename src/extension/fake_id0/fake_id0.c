@@ -50,6 +50,7 @@
 #include "path/path.h"
 #include "arch.h"
 #include "handle_functions.h"
+#include "nonhandle_functions.h"
 #include "shared_structs.h"
 
 #define META_TAG        ".proot-meta-file."
@@ -65,7 +66,7 @@ typedef struct {
 } ModifiedNode;
 
 /* List of syscalls handled by this extensions.  */
-static FilteredSysnum filtered_sysnums[] = {
+FilteredSysnum filtered_sysnums[] = {
     { PR_access,        FILTER_SYSEXIT },
     { PR_capset,        FILTER_SYSEXIT },
     { PR_chmod,         FILTER_SYSEXIT },
@@ -141,7 +142,7 @@ static FilteredSysnum filtered_sysnums[] = {
     { PR_stat,          FILTER_SYSEXIT },
     { PR_stat64,        FILTER_SYSEXIT },
     { PR_statfs,        FILTER_SYSEXIT },
-    { PR_statfs64,      FILTER_SYSEXIT }, 
+    { PR_statfs64,      FILTER_SYSEXIT },
     { PR_symlink,       FILTER_SYSEXIT },
     { PR_symlinkat,     FILTER_SYSEXIT },
     { PR_umask,         FILTER_SYSEXIT },
@@ -150,6 +151,7 @@ static FilteredSysnum filtered_sysnums[] = {
     { PR_utimensat,     FILTER_SYSEXIT },
     FILTERED_SYSNUM_END,
 };
+
 
 /** Converts a decimal number to its octal representation. Used to convert
  *  system returned modes to a more common form for humans.
@@ -204,7 +206,7 @@ static char * get_name(char path[PATH_MAX])
 
 /** Gets a path without its final component.
  */
-static int get_dir_path(char path[PATH_MAX], char dir_path[PATH_MAX])
+int get_dir_path(char path[PATH_MAX], char dir_path[PATH_MAX])
 {
     int offset;
 
@@ -228,7 +230,7 @@ static int get_dir_path(char path[PATH_MAX], char dir_path[PATH_MAX])
 /** Stores in meta_path the contents of orig_path with the addition of META_TAG
  *  to the final component.
  */
-static int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX]) 
+int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX]) 
 {
     char *filename;
 
@@ -255,7 +257,7 @@ static int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX])
  *  is used in cases where the function is used to find relative paths
  *  for __at calls.
  */
-static int get_fd_path(Tracee *tracee, char path[PATH_MAX], Reg fd_sysarg, RegVersion version)
+int get_fd_path(Tracee *tracee, char path[PATH_MAX], Reg fd_sysarg, RegVersion version)
 {
     int status;
 
@@ -286,7 +288,7 @@ static int get_fd_path(Tracee *tracee, char path[PATH_MAX], Reg fd_sysarg, RegVe
 
 /** Reads a path from path_sysarg into path.
  */
-static int read_sysarg_path(Tracee *tracee, char path[PATH_MAX], Reg path_sysarg, RegVersion version)
+int read_sysarg_path(Tracee *tracee, char path[PATH_MAX], Reg path_sysarg, RegVersion version)
 {
     int size;
     char original[PATH_MAX];
@@ -336,7 +338,7 @@ static int read_sysarg_path(Tracee *tracee, char path[PATH_MAX], Reg path_sysarg
  *  is_creat is set to true, the umask needs to be used since it would have
  *  been by a real system call.
  */
-static int write_meta_file(char path[PATH_MAX], mode_t mode, uid_t owner, gid_t group, 
+int write_meta_file(char path[PATH_MAX], mode_t mode, uid_t owner, gid_t group, 
     bool is_creat, Config *config)
 {
     FILE *fp;
@@ -361,7 +363,7 @@ static int write_meta_file(char path[PATH_MAX], mode_t mode, uid_t owner, gid_t 
  *  meta file. If the meta file doesn't exist, it reverts back to the original
  *  functionality of PRoot, with the addition of setting the mode to 755.
  */
-static int read_meta_file(char path[PATH_MAX], mode_t *mode, uid_t *owner, gid_t *group, Config *config)
+int read_meta_file(char path[PATH_MAX], mode_t *mode, uid_t *owner, gid_t *group, Config *config)
 {
     FILE *fp;
     int lcl_mode;
@@ -383,7 +385,7 @@ static int read_meta_file(char path[PATH_MAX], mode_t *mode, uid_t *owner, gid_t
 
 /** Determines whether the file specified by path exists.
  */
-static int path_exists(char path[PATH_MAX])
+int path_exists(char path[PATH_MAX])
 {
     return access(path, F_OK);  
 }
@@ -391,7 +393,7 @@ static int path_exists(char path[PATH_MAX])
 /** Returns the mode pertinent to the level of permissions the user has. Eg if
  *  uid 1000 tries to access a file it owns with mode 751, this returns 7.
  */
-static int get_permissions(char meta_path[PATH_MAX], Config *config, bool uses_real)
+int get_permissions(char meta_path[PATH_MAX], Config *config, bool uses_real)
 {
     int perms;
     int omode;
@@ -442,7 +444,7 @@ static int get_permissions(char meta_path[PATH_MAX], Config *config, bool uses_r
  *  parent directory of the file specified by path also has write permissions.
  *  The permission check uses guest paths only.
  */
-static int check_dir_perms(Tracee *tracee, char type, char path[PATH_MAX], 
+int check_dir_perms(Tracee *tracee, char type, char path[PATH_MAX], 
     char rel_path[PATH_MAX], Config *config)
 {
     int status, perms;
@@ -482,321 +484,6 @@ static int check_dir_perms(Tracee *tracee, char type, char path[PATH_MAX],
     return 0;
 }
 
-
-/** Handles mkdir, mkdirat, mknod, and mknodat syscalls. Creates a matching
- *  meta file. See mkdir(2) and mknod(2) for returned permission errors.
- */
-static int handle_mk(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
-    Reg mode_sysarg, Config *config)
-{
-    int status;
-    mode_t mode;
-    char orig_path[PATH_MAX];
-    char rel_path[PATH_MAX];
-    char meta_path[PATH_MAX];
-
-    status  = read_sysarg_path(tracee, orig_path, path_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-    if(status == 1)
-        return 0;
-
-    /* If the path exists, get out. The syscall itself will return EEXIST. */
-    if(path_exists(orig_path) == 0)
-        return 0;
-
-    status = get_meta_path(orig_path, meta_path);
-    if(status < 0)
-        return status;
-
-    status = get_fd_path(tracee, rel_path, fd_sysarg, CURRENT);
-    if(status < 0) 
-        return status;
-    
-    status = check_dir_perms(tracee, 'w', orig_path, rel_path, config);
-    if(status < 0) 
-        return status;
-    
-    mode = peek_reg(tracee, ORIGINAL, mode_sysarg);
-    poke_reg(tracee, mode_sysarg, (mode|0700));
-    return write_meta_file(meta_path, mode, config->euid, config->egid, 1, config);
-}
-
-/** Handles unlink, unlinkat, and rmdir syscalls. Checks permissions in meta 
- *  files matching the file to be unlinked if the meta file exists. Unlinks
- *  the meta file if the call would be successful. See unlink(2) and rmdir(2)
- *  for returned errors.
- */
-static int handle_unlink(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, Config *config)
-{
-    int status;
-    char orig_path[PATH_MAX];
-    char rel_path[PATH_MAX];
-    char meta_path[PATH_MAX];
-    
-    status = read_sysarg_path(tracee, orig_path, path_sysarg, CURRENT); 
-    if(status < 0) 
-        return status;
-    if(status == 1)
-        return 0;
-
-    status = get_meta_path(orig_path, meta_path);
-    if(status < 0) 
-        return status;
-    
-    status = get_fd_path(tracee, rel_path, fd_sysarg, CURRENT);
-    if(status < 0) 
-        return status;
-    
-    status = check_dir_perms(tracee, 'w', orig_path, rel_path, config);
-    if(status < 0) 
-        return status;
- 
-    /** If the meta_file relating to the file being unlinked exists,
-     *  unlink that as well.
-     */
-    if(path_exists(meta_path) == 0) 
-        unlink(meta_path);
-
-    return 0;
-}
-
-/** Handles rename and renameat syscalls. If a meta file matching the file to
- *  to be renamed exists, renames the meta file as well. See rename(2) for
- *  returned permission errors.
- */
-static int handle_rename(Tracee *tracee, Reg oldfd_sysarg, Reg oldpath_sysarg, 
-    Reg newfd_sysarg, Reg newpath_sysarg, Config *config)
-{
-    int status;
-    uid_t uid;
-    gid_t gid;
-    mode_t mode;
-    char oldpath[PATH_MAX];
-    char newpath[PATH_MAX];
-    char rel_oldpath[PATH_MAX];
-    char rel_newpath[PATH_MAX];
-    char meta_path[PATH_MAX];
-
-    status = read_sysarg_path(tracee, oldpath, oldpath_sysarg, CURRENT); 
-    if(status < 0)
-        return status;
-    if(status == 1)
-        return 0;
-
-    status = read_sysarg_path(tracee, newpath, newpath_sysarg, CURRENT); 
-    if(status < 0)
-        return status;
-    if(status == 1)
-        return 0;
-
-    status = get_fd_path(tracee, rel_oldpath, oldfd_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-
-    status = get_fd_path(tracee, rel_newpath, newfd_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-
-    status = check_dir_perms(tracee, 'w', oldpath, rel_oldpath, config);
-    if(status < 0)
-        return status;
-
-    status = check_dir_perms(tracee, 'w', newpath, rel_newpath, config);
-    if(status < 0)
-        return status;
-
-    // If a meta file exists, "copy" it to the new path.
-    status = get_meta_path(oldpath, meta_path);
-    if(status < 0)
-        return status;
-
-    if(path_exists(meta_path) != 0)
-        return 0;
-
-    read_meta_file(meta_path, &mode, &uid, &gid, config);
-    unlink(meta_path);
-    
-    strcpy(meta_path, "");
-    status = get_meta_path(newpath, meta_path);
-    if(status < 0)
-        return status;
-
-    return write_meta_file(meta_path, mode, uid, gid, 0, config); 
-}
-
-/** Handles chmod, fchmod, and fchmodat syscalls. Changes meta files to the new
- *  permissions if the meta file exists. See chmod(2) for returned permission
- *  errors. 
- */
-static int handle_chmod(Tracee *tracee, Reg path_sysarg, Reg mode_sysarg, 
-    Reg fd_sysarg, Reg dirfd_sysarg, Config *config)
-{
-    int status;
-    mode_t call_mode, read_mode;
-    uid_t owner;
-    gid_t group;
-    char path[PATH_MAX];
-    char rel_path[PATH_MAX];
-    char meta_path[PATH_MAX];
-
-    // When path_sysarg is set to IGNORE, the call being handled is fchmod.
-    if(path_sysarg == IGNORE_SYSARG) 
-        status = get_fd_path(tracee, path, fd_sysarg, CURRENT);
-    else
-        status = read_sysarg_path(tracee, path, path_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-    // If the file exists outside the guestfs, drop the syscall.
-    else if(status == 1) {
-        set_sysnum(tracee, PR_getuid);
-        return 0;
-    }
-
-    status = get_meta_path(path, meta_path);
-    if(path_exists(meta_path) < 0)
-        return 0;
-
-    status = get_fd_path(tracee, rel_path, dirfd_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-
-    status = check_dir_perms(tracee, 'r', path, rel_path, config);
-    if(status < 0) 
-        return status;
-    
-    read_meta_file(meta_path, &read_mode, &owner, &group, config);
-    if(config->euid != owner && config->euid != 0) 
-        return -EPERM;
-
-    call_mode = peek_reg(tracee, ORIGINAL, mode_sysarg);
-    set_sysnum(tracee, PR_getuid);
-    return write_meta_file(meta_path, call_mode, owner, group, 0, config);
-}
-
-/** Handles chown, lchown, fchown, and fchownat syscalls. Changes the meta file
- *  to reflect arguments sent to the syscall if the meta file exists. See
- *  chown(2) for returned permission errors.
- */
-static int handle_chown(Tracee *tracee, Reg path_sysarg, Reg owner_sysarg,
-    Reg group_sysarg, Reg fd_sysarg, Reg dirfd_sysarg, Config *config)
-{
-    int status;
-    mode_t mode;
-    uid_t owner, read_owner;
-    gid_t group, read_group;
-    char path[PATH_MAX];
-    char rel_path[PATH_MAX];
-    char meta_path[PATH_MAX];
-    
-    if(path_sysarg == IGNORE_SYSARG)
-        status = get_fd_path(tracee, path, fd_sysarg, CURRENT);
-    else
-        status = read_sysarg_path(tracee, path, path_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-    // If the path exists outside the guestfs, drop the syscall.
-    else if(status == 1) {
-        set_sysnum(tracee, PR_getuid);
-        return 0;
-    }
-
-    status = get_meta_path(path, meta_path);
-    if(status < 0)
-        return status;
-
-    if(path_exists(meta_path) != 0)
-        return 0;
-
-    status = get_fd_path(tracee, rel_path, dirfd_sysarg, CURRENT);
-    if(status < 0)
-        return status;
-
-    status = check_dir_perms(tracee, 'r', path, rel_path, config);
-    if(status < 0)
-        return status;
-
-    read_meta_file(meta_path, &mode, &read_owner, &read_group, config);
-    owner = peek_reg(tracee, ORIGINAL, owner_sysarg);
-    /** When chown is called without an owner specified, eg 
-     *  chown :1000 'file', the owner argument to the system call is implicitly
-     *  set to -1. To avoid this, the owner argument is replaced with the owner
-     *  according to the meta file if it exists, or the current euid.
-     */
-    if((int) owner == -1)
-        owner = read_owner;
-    group = peek_reg(tracee, ORIGINAL, group_sysarg);
-    if(config->euid == 0) 
-        write_meta_file(meta_path, mode, owner, group, 0, config);
-
-    //TODO Handle chown properly: owner can only change the group of
-    //  a file to another group they belong to.
-    else if(config->euid == read_owner) {
-        write_meta_file(meta_path, mode, read_owner, group, 0, config);
-        poke_reg(tracee, owner_sysarg, read_owner);    
-    }
-
-    else if(config->euid != read_owner) 
-        return -EPERM;
-
-    set_sysnum(tracee, PR_getuid);
-
-    return 0;
-}
-
-/** Handles the utimensat syscall. Checks permissions of the meta file if it
- *  exists and returns an error if the call would not pass according to the 
- *  errors found in utimensat(2).
- */
-static int handle_utimensat(Tracee *tracee, Reg dirfd_sysarg, 
-    Reg path_sysarg, Reg times_sysarg, Config *config)
-{
-    int status, perms, fd;
-    struct timespec times[2];
-    mode_t ignore_m;
-    uid_t owner;
-    gid_t ignore_g;
-    char path[PATH_MAX];
-    char meta_path[PATH_MAX];
-
-    // Only care about calls that attempt to change something.
-    status = peek_reg(tracee, ORIGINAL, times_sysarg);
-    if(status != 0) {
-        status = read_data(tracee, times, peek_reg(tracee, ORIGINAL, times_sysarg), sizeof(times));
-        if(times[0].tv_nsec != UTIME_NOW && times[1].tv_nsec != UTIME_NOW) 
-            return 0;
-    }
-
-    fd = peek_reg(tracee, ORIGINAL, dirfd_sysarg);
-    if(fd == AT_FDCWD) {
-        status = read_sysarg_path(tracee, path, path_sysarg, CURRENT);
-        if(status < 0) 
-            return status;
-        if(status == 1)
-            return 0;
-    }
-    else {
-        status = get_fd_path(tracee, path, dirfd_sysarg, CURRENT);
-        if(status < 0)
-            return status;
-    }
-
-    status = get_meta_path(path, meta_path);
-    if(status < 0)
-        return status;
-
-    // Current user must be owner of file or root.
-    read_meta_file(meta_path, &ignore_m, &owner, &ignore_g, config);
-    if(config->euid != owner && config->euid != 0) 
-        return -EACCES;
-
-    // If write permissions are on the file, continue.
-    perms = get_permissions(meta_path, config, 0);
-    if((perms & 2) != 2)
-        return -EACCES;
-
-    return 0;
-}
 
 /** Handles the access and faccessat syscalls. Checks permissions according to
  *  a meta file if it exists. See access(2) for returned errors.

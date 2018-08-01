@@ -17,6 +17,7 @@ typedef struct {
     gid_t fsgid;
 
     mode_t umask;
-} Config;
+} Config; 
+
 
 #endif

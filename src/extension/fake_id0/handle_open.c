@@ -12,6 +12,7 @@
 
 #include "shared_structs.h"
 #include "tracee/reg.h"
+#include "nonhandle_functions.h"
 
 #define IGNORE_SYSARG (Reg)2000
 
