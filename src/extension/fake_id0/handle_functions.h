@@ -17,4 +17,6 @@ extern int handle_chown(Tracee *tracee, Reg path_sysarg, Reg owner_sysarg, Reg g
 
 extern int handle_utimensat(Tracee *tracee, Reg dirfd_sysarg, Reg path_sysarg, Reg times_sysarg, Config *config);
 
+extern int handle_access(Tracee *tracee, Reg path_sysarg, Reg mode_sysarg, Reg dirfd_sysarg, Config *config);
+
 #endif
