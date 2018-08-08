@@ -70,7 +70,8 @@ OBJECTS += \
 	extension/fake_id0/handle_utimensat.o \
 	extension/fake_id0/handle_access.o \
 	extension/fake_id0/handle_exec.o \
-	extension/fake_id0/handle_link.o
+	extension/fake_id0/handle_link.o \
+	extension/fake_id0/handle_symlink.o
 
 define define_from_arch.h
 $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')
