@@ -25,4 +25,6 @@ extern int handle_link(Tracee *tracee, Reg olddirfd_sysarg, Reg oldpath_sysarg, 
 
 extern int handle_symlink(Tracee *tracee, Reg oldpath_sysarg, Reg newdirfd_sysarg, Reg newpath_sysarg, Config *config);
 
+extern int handle_fstat_enter(Tracee *tracee, Reg fd_sysarg);
+
 #endif
