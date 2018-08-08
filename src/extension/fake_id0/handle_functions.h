@@ -19,4 +19,6 @@ extern int handle_utimensat(Tracee *tracee, Reg dirfd_sysarg, Reg path_sysarg, R
 
 extern int handle_access(Tracee *tracee, Reg path_sysarg, Reg mode_sysarg, Reg dirfd_sysarg, Config *config);
 
+extern int handle_exec(Tracee *tracee, Reg filename_sysarg, Config *config);
+
 #endif
