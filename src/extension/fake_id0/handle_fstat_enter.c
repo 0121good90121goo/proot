@@ -4,8 +4,12 @@
 #include <linux/limits.h>
 
 #include "tracee/reg.h"
+#include "tracee/mem.h"
 #include "shared_structs.h"
 #include "nonhandle_functions.h"
+#include "syscall/syscall.h"
+#include "syscall/sysnum.h"
+#include "syscall/seccomp.h"
 
 int handle_fstat_enter(Tracee *tracee, Reg fd_sysarg) {
     char path[PATH_MAX];
