@@ -49,9 +49,22 @@
 #include "path/binding.h"
 #include "path/path.h"
 #include "arch.h"
-#include "handle_functions.h"
+
 #include "nonhandle_functions.h"
 #include "shared_structs.h"
+
+#include "handle_open.h"
+#include "handle_mk.h"
+#include "handle_unlink.h"
+#include "handle_rename.h"
+#include "handle_chmod.h"
+#include "handle_chown.h"
+#include "handle_utimensat.h"
+#include "handle_access.h"
+#include "handle_exec.h"
+#include "handle_link.h"
+#include "handle_symlink.h"
+#include "handle_fstat_enter.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000
