@@ -4,9 +4,14 @@
 
 #include <linux/limits.h>
 
-#include "shared_structs.h"
 #include "tracee/reg.h"
-#include "nonhandle_functions.h"
+
+#include "shared_structs.h"
+
+#include "read_sysarg_path.h"
+#include "path_exists.h"
+#include "get_meta_path.h"
+#include "get_fd_path.h"
 
 int handle_mk(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
     Reg mode_sysarg, Config *config)

@@ -7,9 +7,14 @@
 #include <errno.h>
 
 #include "tracee/reg.h"
-#include "shared_structs.h"
-#include "nonhandle_functions.h"
 #include "syscalls_array.h"
+
+#include "shared_structs.h"
+
+#include "get_fd_path.h"
+#include "read_sysarg_path.h"
+#include "get_meta_path.h"
+#include "path_exists.h"
 
 #define IGNORE_SYSARG (Reg)2000
 

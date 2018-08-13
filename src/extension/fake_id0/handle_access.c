@@ -3,8 +3,12 @@
 #include <unistd.h>
 
 #include "tracee/reg.h"
+
 #include "shared_structs.h"
-#include "nonhandle_functions.h"
+
+#include "read_sysarg_path.h"
+#include "get_fd_path.h"
+#include "get_meta_path.h"
 
 /** Handles the access and faccessat syscalls. Checks permissions according to
  *  a meta file if it exists. See access(2) for returned errors.

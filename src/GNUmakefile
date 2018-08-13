@@ -72,7 +72,11 @@ OBJECTS += \
 	extension/fake_id0/handle_exec.o \
 	extension/fake_id0/handle_link.o \
 	extension/fake_id0/handle_symlink.o \
-	extension/fake_id0/handle_fstat_enter.o
+	extension/fake_id0/handle_fstat_enter.o \
+	extension/fake_id0/get_dir_path.o \
+	extension/fake_id0/get_meta_path.o \
+	extension/fake_id0/get_fd_path.o \
+	extension/fake_id0/read_sysarg_path.o \
 
 define define_from_arch.h
 $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')

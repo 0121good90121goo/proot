@@ -7,8 +7,12 @@
 #include <sys/stat.h>
 
 #include "tracee/reg.h"
-#include "nonhandle_functions.h"
+
 #include "shared_structs.h"
+
+#include "read_sysarg_path.h"
+#include "get_meta_path.h"
+#include "path_exists.h"
 
 int handle_exec(Tracee *tracee, Reg filename_sysarg, Config *config)
 {

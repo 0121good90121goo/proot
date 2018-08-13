@@ -8,8 +8,13 @@
 #include <unistd.h>
 
 #include "tracee/reg.h"
+
 #include "shared_structs.h"
-#include "nonhandle_functions.h"
+
+#include "read_sysarg_path.h"
+#include "get_fd_path.h"
+#include "path_exists.h"
+#include "get_meta_path.h"
 
 int handle_rename(Tracee *tracee, Reg oldfd_sysarg, Reg oldpath_sysarg, 
     Reg newfd_sysarg, Reg newpath_sysarg, Config *config)

@@ -11,8 +11,12 @@
 
 #include "tracee/reg.h"
 #include "tracee/mem.h"
+
 #include "shared_structs.h"
-#include "nonhandle_functions.h"
+
+#include "read_sysarg_path.h"
+#include "get_meta_path.h"
+#include "get_fd_path.h"
 
 int handle_utimensat(Tracee *tracee, Reg dirfd_sysarg, 
     Reg path_sysarg, Reg times_sysarg, Config *config)

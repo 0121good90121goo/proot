@@ -50,7 +50,6 @@
 #include "path/path.h"
 #include "arch.h"
 
-#include "nonhandle_functions.h"
 #include "shared_structs.h"
 
 #include "handle_open.h"
@@ -65,6 +64,11 @@
 #include "handle_link.h"
 #include "handle_symlink.h"
 #include "handle_fstat_enter.h"
+
+#include "get_dir_path.h"
+#include "get_meta_path.h"
+#include "get_fd_path.h"
+#include "read_sysarg_path.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000
@@ -217,135 +221,6 @@ static char * get_name(char path[PATH_MAX])
     return name;
 }
 
-/** Gets a path without its final component.
- */
-int get_dir_path(char path[PATH_MAX], char dir_path[PATH_MAX])
-{
-    int offset;
-
-    strcpy(dir_path, path);
-    offset = strlen(dir_path) - 1;
-    if (offset > 0) {
-        /* Skip trailing path separators. */
-        while (offset > 1 && dir_path[offset] == '/')
-            offset--;
-
-        /* Search for the previous path separator. */
-        while (offset > 1 && dir_path[offset] != '/')
-            offset--;
-
-        /* Cut the end of the string before the last component. */
-        dir_path[offset] = '\0';
-    }
-    return 0;   
-}
-
-/** Stores in meta_path the contents of orig_path with the addition of META_TAG
- *  to the final component.
- */
-int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX]) 
-{
-    char *filename;
-
-    /*Separate the final component from the path. */
-    get_dir_path(orig_path, meta_path);
-    filename = get_name(orig_path);
-
-    /* Add a / between the final component and the rest of the path. */
-    if(strcmp(meta_path, "/") != 0)
-        strcat(meta_path, "/");
-
-    if(strlen(meta_path) + strlen(filename) + strlen(META_TAG) >= PATH_MAX)
-        return -ENAMETOOLONG;
-
-    /* Insert the meta_tag between the path and its final component. */
-    strcat(meta_path, META_TAG);
-    strcat(meta_path, filename);
-    return 0;
-}
-
-/** Gets a path from file descriptor system argument. If that sysarg is 
- *  IGNORE_FLAGS, it returns the root of the guestfs, and if the file 
- *  descriptor refers to the cwd, it returns that. Returning the root
- *  is used in cases where the function is used to find relative paths
- *  for __at calls.
- */
-int get_fd_path(Tracee *tracee, char path[PATH_MAX], Reg fd_sysarg, RegVersion version)
-{
-    int status;
-
-    if(fd_sysarg != IGNORE_SYSARG) {
-        // AT_CWD translates to -100, so replace it with a canonicalized version
-        if((signed int) peek_reg(tracee, version, fd_sysarg) == -100) 
-            status = getcwd2(tracee, path);
-
-        else {
-            // See read_sysarg_path for an explanation of the use of modified.
-            status = readlink_proc_pid_fd(tracee->pid, peek_reg(tracee, version, fd_sysarg), path);
-        }
-        if(status < 0) 
-            return status;
-    }
-
-    else 
-        translate_path(tracee, path, AT_FDCWD, "/", true);
-    
-    /** If a path does not belong to the guestfs, a handler either exits with 0
-     *  or sets the syscall to void (in the case of chmod and chown.
-     */
-    if(!belongs_to_guestfs(tracee, path))
-        return 1;
-
-    return 0;
-}
-
-/** Reads a path from path_sysarg into path.
- */
-int read_sysarg_path(Tracee *tracee, char path[PATH_MAX], Reg path_sysarg, RegVersion version)
-{
-    int size;
-    char original[PATH_MAX];
-    /** Current is already canonicalized. . Modified is used here
-     *  for exit calls because on ARM architectures, the result to a system
-     *  call is placed in SYSARG_1. Using MODIFIED allows the original path to
-     *  be read. ORIGINAL is necessary in the case of execve(2) because of the
-     *  modifications that PRoot makes to the path of the executable.
-     */
-    switch(version) {
-        case MODIFIED: 
-            size = read_string(tracee, path, peek_reg(tracee, MODIFIED, path_sysarg), PATH_MAX);
-            break;
-        case CURRENT:
-            size = read_string(tracee, path, peek_reg(tracee, CURRENT, path_sysarg), PATH_MAX);
-            break;
-        case ORIGINAL:
-            size = read_string(tracee, original, peek_reg(tracee, ORIGINAL, path_sysarg), PATH_MAX);
-            translate_path(tracee, path, AT_FDCWD, original, true);
-            break;
-        /* Never hit */
-        default:
-            size = 0;   //Shut the compiler up
-            break;
-    }
-
-    if(size < 0) 
-        return size;
-    if(size >= PATH_MAX) 
-        return -ENAMETOOLONG;
-
-    /** If a path does not belong to the guestfs, a handler either exits with 0
-     *  or sets the syscall to void (in the case of chmod and chown). Checking
-     *  whether or not a path belongs to the guestfs only needs to happen if
-     *  that path actually exists. Removing this check will cause some package
-     *  installations to fail because they try to create symlinks with null
-     *  targets.
-     */
-    if(strlen(path) > 0)
-        if(!belongs_to_guestfs(tracee, path))
-            return 1;
-
-    return 0;
-}
 
 /** Writes mode, owner, and group to the meta file specified by path. If 
  *  is_creat is set to true, the umask needs to be used since it would have
