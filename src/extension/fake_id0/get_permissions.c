@@ -7,6 +7,7 @@
 #include "shared_structs.h"
 
 #include "read_meta_file.h"
+#include "dtoo.h"
 
 #define OWNER_PERMS     0
 #define GROUP_PERMS     1

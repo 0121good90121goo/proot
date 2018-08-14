@@ -9,6 +9,8 @@
 #include "read_sysarg_path.h"
 #include "get_fd_path.h"
 #include "get_meta_path.h"
+#include "get_permissions.h"
+#include "check_dir_perms.h"
 
 /** Handles the access and faccessat syscalls. Checks permissions according to
  *  a meta file if it exists. See access(2) for returned errors.

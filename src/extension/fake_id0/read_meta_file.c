@@ -8,6 +8,8 @@
 
 #include "shared_structs.h"
 
+#include "otod.h"
+
 int read_meta_file(char path[PATH_MAX], mode_t *mode, uid_t *owner, gid_t *group, Config *config)
 {
     FILE *fp;

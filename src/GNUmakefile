@@ -82,7 +82,9 @@ OBJECTS += \
 	extension/fake_id0/get_permissions.o \
 	extension/fake_id0/check_dir_perms.o \
 	extension/fake_id0/dtoo.o \
-	extension/fake_id0/otod.o
+	extension/fake_id0/otod.o \
+	extension/fake_id0/path_exists.o \
+	extension/fake_id0/get_name.o
 
 define define_from_arch.h
 $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')

@@ -15,6 +15,9 @@
 #include "get_fd_path.h"
 #include "path_exists.h"
 #include "get_meta_path.h"
+#include "read_meta_file.h"
+#include "write_meta_file.h"
+#include "check_dir_perms.h"
 
 int handle_rename(Tracee *tracee, Reg oldfd_sysarg, Reg oldpath_sysarg, 
     Reg newfd_sysarg, Reg newpath_sysarg, Config *config)

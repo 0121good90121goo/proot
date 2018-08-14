@@ -17,6 +17,8 @@
 #include "read_sysarg_path.h"
 #include "get_meta_path.h"
 #include "get_fd_path.h"
+#include "get_permissions.h"
+#include "read_meta_file.h"
 
 int handle_utimensat(Tracee *tracee, Reg dirfd_sysarg, 
     Reg path_sysarg, Reg times_sysarg, Config *config)

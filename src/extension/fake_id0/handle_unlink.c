@@ -13,6 +13,7 @@
 #include "get_meta_path.h"
 #include "get_fd_path.h"
 #include "path_exists.h"
+#include "check_dir_perms.h"
 
 int handle_unlink(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, Config *config)
 {

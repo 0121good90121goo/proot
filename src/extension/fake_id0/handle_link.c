@@ -10,6 +10,7 @@
 
 #include "read_sysarg_path.h"
 #include "get_fd_path.h"
+#include "check_dir_perms.h"
 
 int handle_link(Tracee *tracee, Reg olddirfd_sysarg, Reg oldpath_sysarg,
     Reg newdirfd_sysarg, Reg newpath_sysarg, Config *config)

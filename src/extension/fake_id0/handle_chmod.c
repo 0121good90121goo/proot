@@ -15,6 +15,9 @@
 #include "read_sysarg_path.h"
 #include "get_meta_path.h"
 #include "path_exists.h"
+#include "write_meta_file.h"
+#include "read_meta_file.h"
+#include "check_dir_perms.h"
 
 #define IGNORE_SYSARG (Reg)2000
 

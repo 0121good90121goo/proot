@@ -69,6 +69,8 @@
 #include "get_meta_path.h"
 #include "get_fd_path.h"
 #include "read_sysarg_path.h"
+#include "path_exists.h"
+#include "read_meta_file.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000
@@ -169,20 +171,6 @@ FilteredSysnum filtered_sysnums[] = {
     FILTERED_SYSNUM_END,
 };
 
-/** Gets the final component of a path.
- */
-static char * get_name(char path[PATH_MAX])
-{
-    char *name;
-
-    name = strrchr(path,'/');
-    if (name == NULL)
-        name = path;
-    else
-        name++;
-
-    return name;
-}
 
 /**
  * Restore the @node->mode for the given @node->path.

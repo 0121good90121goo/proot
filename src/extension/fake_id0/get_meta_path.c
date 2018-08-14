@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "get_dir_path.h"
+#include "get_name.h"
 
 int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX]) 
 {

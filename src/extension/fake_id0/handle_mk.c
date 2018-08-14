@@ -12,6 +12,8 @@
 #include "path_exists.h"
 #include "get_meta_path.h"
 #include "get_fd_path.h"
+#include "check_dir_perms.h"
+#include "write_meta_file.h"
 
 int handle_mk(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, 
     Reg mode_sysarg, Config *config)
