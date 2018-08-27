@@ -6,7 +6,8 @@
 #include <string.h>
 
 #include "shared_structs.h"
-#include "dtoo.h"
+
+#include "fake_id_helper_functions.h"
 
 #define OWNER_PERMS     0
 #define GROUP_PERMS     1

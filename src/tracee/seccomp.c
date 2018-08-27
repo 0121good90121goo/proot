@@ -2,6 +2,7 @@
 #include <signal.h>    /* SIGSYS, */
 #include <unistd.h>    /* getpgid, */
 #include <sys/vfs.h>   /* statfs64 */
+#include <string.h>    /* memset   */
 
 #include "extension/extension.h"
 #include "cli/note.h"

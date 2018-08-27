@@ -4,10 +4,13 @@
 #include <unistd.h>
 #include <linux/limits.h>
 #include <fcntl.h>
+#include <string.h>
 
 #include "tracee/reg.h"
 #include "tracee/mem.h"
 #include "path/path.h"
+
+#include "fake_id_helper_functions.h"
 
 #define IGNORE_SYSARG (Reg)2000
 

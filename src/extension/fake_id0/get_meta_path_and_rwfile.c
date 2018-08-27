@@ -11,6 +11,8 @@
 
 #include "shared_structs.h"
 
+#include "fake_id_helper_functions.h"
+
 int get_meta_path(char orig_path[PATH_MAX], char meta_path[PATH_MAX]) 
 {
     char *filename;

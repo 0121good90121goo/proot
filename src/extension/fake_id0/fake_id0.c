@@ -65,12 +65,7 @@
 #include "handle_symlink.h"
 #include "handle_fstat_enter.h"
 
-#include "get_dir_path.h"
-#include "get_meta_path.h"
-#include "get_fd_path.h"
-#include "read_sysarg_path.h"
-#include "path_exists.h"
-#include "read_meta_file.h"
+#include "fake_id_helper_functions.h"
 
 #define META_TAG        ".proot-meta-file."
 #define IGNORE_SYSARG   (Reg)2000

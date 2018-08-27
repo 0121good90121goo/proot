@@ -13,6 +13,7 @@
 #include "shared_structs.h"
 #include "tracee/reg.h"
 
+#include "fake_id_helper_functions.h"
 
 int check_dir_perms(Tracee *tracee, char type, char path[PATH_MAX], 
     char rel_path[PATH_MAX], Config *config)

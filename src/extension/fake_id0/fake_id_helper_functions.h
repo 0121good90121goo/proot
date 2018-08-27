@@ -30,4 +30,6 @@ extern int path_exists(char path[PATH_MAX]);
 
 extern int get_fd_path(Tracee *tracee, char path[PATH_MAX], Reg fd_sysarg, RegVersion version);
 
+extern int read_sysarg_path(Tracee *tracee, char path[PATH_MAX], Reg path_sysarg, RegVersion version);
+
 #endif
