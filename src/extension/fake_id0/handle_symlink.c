@@ -7,11 +7,7 @@
 
 #include "tracee/reg.h"
 
-#include "shared_structs.h"
-
-#include "read_sysarg_path.h"
-#include "get_fd_path.h"
-#include "check_dir_perms.h"
+#include "fake_id_helper_functions.h"
 
 int handle_symlink(Tracee *tracee, Reg oldpath_sysarg,
     Reg newdirfd_sysarg, Reg newpath_sysarg, Config *config)

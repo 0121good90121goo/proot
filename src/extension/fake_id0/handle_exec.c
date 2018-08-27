@@ -8,14 +8,7 @@
 
 #include "tracee/reg.h"
 
-#include "shared_structs.h"
-
-#include "read_sysarg_path.h"
-#include "get_meta_path.h"
-#include "path_exists.h"
-#include "read_meta_file.h"
-#include "get_permissions.h"
-#include "check_dir_perms.h"
+#include "fake_id_helper_functions.h"
 
 int handle_exec(Tracee *tracee, Reg filename_sysarg, Config *config)
 {

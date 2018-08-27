@@ -9,11 +9,7 @@
 
 #include "tracee/reg.h"
 
-#include "read_sysarg_path.h"
-#include "get_meta_path.h"
-#include "get_fd_path.h"
-#include "path_exists.h"
-#include "check_dir_perms.h"
+#include "fake_id_helper_functions.h"
 
 int handle_unlink(Tracee *tracee, Reg fd_sysarg, Reg path_sysarg, Config *config)
 {

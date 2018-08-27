@@ -73,18 +73,11 @@ OBJECTS += \
 	extension/fake_id0/handle_link.o \
 	extension/fake_id0/handle_symlink.o \
 	extension/fake_id0/handle_fstat_enter.o \
-	extension/fake_id0/get_dir_path.o \
-	extension/fake_id0/get_meta_path.o \
-	extension/fake_id0/get_fd_path.o \
-	extension/fake_id0/read_sysarg_path.o \
-	extension/fake_id0/write_meta_file.o \
-	extension/fake_id0/read_meta_file.o \
-	extension/fake_id0/get_permissions.o \
-	extension/fake_id0/check_dir_perms.o \
-	extension/fake_id0/dtoo.o \
-	extension/fake_id0/otod.o \
-	extension/fake_id0/path_exists.o \
-	extension/fake_id0/get_name.o \
+	extension/fake_id0/check_dir_path_and_perms.o \
+	extension/fake_id0/decimal_conversion.o \
+	extension/fake_id0/get_meta_path_and_rwfile.o \
+	extension/fake_id0/get_name_and_permissions.o \
+	extension/fake_id0/get_sysarg_fd_path.o \
 	extension/link2symlink/my_readlink.o \
 	extension/link2symlink/move_and_symlink_path.o \
 	extension/link2symlink/decrement_link_count.o

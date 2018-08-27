@@ -12,15 +12,7 @@
 
 #include "tracee/reg.h"
 
-#include "shared_structs.h"
-
-#include "read_sysarg_path.h"
-#include "get_meta_path.h"
-#include "path_exists.h"
-#include "get_fd_path.h"
-#include "check_dir_perms.h"
-#include "write_meta_file.h"
-#include "get_permissions.h"
+#include "fake_id_helper_functions.h"
 
 #define IGNORE_SYSARG (Reg)2000
 
