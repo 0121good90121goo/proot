@@ -1,0 +1,6 @@
+#ifndef FAKE_ID_HELPER_FUNCTIONS_H_
+#define FAKE_ID_HELPER_FUNCTIONS_H_
+
+
+
+
