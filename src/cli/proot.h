@@ -262,6 +262,20 @@ Copyright (C) 2015 STMicroelectronics, licensed under GPL v2 or later.",
 \tgroup appear as if they were owned by uid and gid instead.\n\
 \tNote that the -0 option is the same as -i 0:0.",
 	},
+/************** This portion is Adam's code. All complaints about things being broken please *******/
+/************** forward to him because he has no idea what he's doing. Thank you.           ********/
+/***************************************************************************************************/
+	{ .class = "Extension options",
+	.arguments = {
+		{ .name = "-Ad", .separator = ' ', .value = "string" },
+		{ .name = "--Android", .separator = '=', .value = "string" },
+		{ .name = NULL, .separator = '\0', .value = NULL } },
+	.handler = handle_option_Ad,
+	.description = "Adam's silly code for stuff! specifically Android!.",
+	.detail = "Template for eventually handling all intercepts and the fake id stuff, but\n\
+			\tright now this is just a skeleton example of dealing with TRANSLATE_PATH\n\
+			\tstuff. I have no idea what I'm doing.",
+	},	
 	{ .class = "Alias options",
 	  .arguments = {
 		{ .name = "-R", .separator = ' ', .value = "path" },
