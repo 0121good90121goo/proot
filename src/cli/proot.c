@@ -186,6 +186,20 @@ static int handle_option_i(Tracee *tracee, const Cli *cli UNUSED, const char *va
 	return 0;
 }
 
+/**********	Adam's code edits for the skeleton extension **********/
+/**********	for Android. All complaints about things     **********/
+/**********	being "broken", its his fault.		     **********/
+
+static int handle_option_Ad(Tracee *tracee, const Cli *cli UNUSED, const char *value UNUSED) {
+	
+	(void) initialize_extension(tracee, handle_option_Ad, NULL);
+
+	return 0; 
+}
+
+/**********    And thus ends a masterpiece of true C genius. **********/
+/**********************************************************************/
+
 static int handle_option_0(Tracee *tracee, const Cli *cli, const char *value UNUSED)
 {
 	return handle_option_i(tracee, cli, "0:0");

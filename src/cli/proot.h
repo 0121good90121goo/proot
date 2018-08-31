@@ -64,6 +64,7 @@ static int handle_option_p(Tracee *tracee, const Cli *cli, const char *value);
 static int handle_option_i(Tracee *tracee, const Cli *cli, const char *value);
 static int handle_option_R(Tracee *tracee, const Cli *cli, const char *value);
 static int handle_option_S(Tracee *tracee, const Cli *cli, const char *value);
+static int handle_option_Ad(Tracee *tracee, const Cli *cli, const char *value); // Adam's contribution ^^
 static int handle_option_kill_on_exit(Tracee *tracee, const Cli *cli, const char *value);
 
 static int pre_initialize_bindings(Tracee *, const Cli *, size_t, char *const *, size_t);
@@ -275,7 +276,10 @@ Copyright (C) 2015 STMicroelectronics, licensed under GPL v2 or later.",
 	.detail = "Template for eventually handling all intercepts and the fake id stuff, but\n\
 			\tright now this is just a skeleton example of dealing with TRANSLATE_PATH\n\
 			\tstuff. I have no idea what I'm doing.",
-	},	
+	},
+/************* Thus ends Adam's extension option entry in the proot.h file. I bid thee ***********/
+/************* ...	  	          Farewell.				      ************/
+/*************************************************************************************************/	
 	{ .class = "Alias options",
 	  .arguments = {
 		{ .name = "-R", .separator = ' ', .value = "path" },
