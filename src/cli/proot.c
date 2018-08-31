@@ -192,7 +192,7 @@ static int handle_option_i(Tracee *tracee, const Cli *cli UNUSED, const char *va
 
 static int handle_option_Ad(Tracee *tracee, const Cli *cli UNUSED, const char *value UNUSED) {
 	
-	(void) initialize_extension(tracee, handle_option_Ad, NULL);
+	(void) initialize_extension(tracee, Android_callback, NULL);
 
 	return 0; 
 }
