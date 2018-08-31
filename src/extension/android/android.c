@@ -23,6 +23,9 @@ int Android_callback(Extension *extension, ExtensionEvent event,
 					      printf("INTERCEPTED TOUCHDOWN\n");
 				      }
 		break;
+		
+		default: fprintf(stderr, "Unknown event %d\n", event);
+			 break;
 	}
 
 return 0;
