@@ -197,7 +197,7 @@ int Android_callback(Extension *extension, ExtensionEvent event,
 	int status;
 
 	switch (event) {
-		case TRANSLATED_PATH: {
+		case INITIALIZATION: {
 	/* List of syscalls handled by this extensions.  */
         static FilteredSysnum filtered_sysnums[] = {
             { PR_link,      FILTER_SYSEXIT },
@@ -222,7 +222,6 @@ int Android_callback(Extension *extension, ExtensionEvent event,
         extension->filtered_sysnums = filtered_sysnums;
         return 0;
 }
-				      }
   case SYSCALL_ENTER_END: {
         Tracee *tracee = TRACEE(extension);
 
