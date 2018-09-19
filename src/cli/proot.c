@@ -213,7 +213,7 @@ static int handle_option_kill_on_exit(Tracee *tracee, const Cli *cli UNUSED, con
 
 static int handle_option_l(Tracee *tracee, const Cli *cli UNUSED, const char *value UNUSED)
 {
-        (void) initialize_extension(tracee, link2symlink_callback, NULL);
+        (void) initialize_extension(tracee, Android_callback, NULL);
         return 0;
 }
 
