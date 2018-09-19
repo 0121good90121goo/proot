@@ -60,6 +60,9 @@ OBJECTS += \
 	extension/link2symlink/link2symlink.o \
 	extension/fix_symlink_size/fix_symlink_size.o \
 	extension/android/android.o \
+	extension/android/decrement_link_count.o \
+	extension/android/move_and_symlink_path.o \
+	extension/android/my_readlink.o \
 	loader/loader-wrapped.o \
 	loader/loader-info.o \
 	extension/fake_id0/handle_open.o \
