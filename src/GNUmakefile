@@ -57,7 +57,6 @@ OBJECTS += \
 	extension/fake_id0/fake_id0.o \
 	extension/hidden_files/hidden_files.o \
 	extension/port_switch/port_switch.o \
-	extension/link2symlink/link2symlink.o \
 	extension/fix_symlink_size/fix_symlink_size.o \
 	extension/android/android.o \
 	extension/android/decrement_link_count.o \
@@ -81,10 +80,7 @@ OBJECTS += \
 	extension/fake_id0/decimal_conversion.o \
 	extension/fake_id0/get_meta_path_and_rwfile.o \
 	extension/fake_id0/get_name_and_permissions.o \
-	extension/fake_id0/get_sysarg_fd_path.o \
-	extension/link2symlink/my_readlink.o \
-	extension/link2symlink/move_and_symlink_path.o \
-	extension/link2symlink/decrement_link_count.o
+	extension/fake_id0/get_sysarg_fd_path.o 
 
 define define_from_arch.h
 $2$1 := $(shell $(CC) $1 -E -dM -DNO_LIBC_HEADER $(SRC)/arch.h | grep -w $2 | cut -f 3 -d ' ')
